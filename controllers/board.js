@@ -57,6 +57,25 @@ exports.addTask = asyncHandler(async (req, res) => {
   res.json({ board });
 });
 
+// @desc      Update a task
+// @route     PUT /api/board/column/:columnId/task/:taskId
+// @access    Private
+exports.updateTask = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { columnId, taskId } = req.params;
+  const { name, description } = req.body;
+
+  let board = await Board.findOne({ user: user._id });
+
+  const task = board.columns.id(columnId).tasks.id(taskId);
+  task.name = name;
+  task.description = description;
+
+  board = await board.save();
+
+  res.json({ board });
+});
+
 // @desc      Delete all tasks
 // @route     DELETE /api/board/column/:id/task
 // @access    Private

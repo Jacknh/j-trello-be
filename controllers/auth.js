@@ -57,3 +57,12 @@ exports.login = asyncHandler(async (req, res) => {
 
   res.json({ name: user.name, token });
 })
+
+// @desc      Get me
+// @route     GET /api/auth/getMe
+// @access    Private
+exports.getMe = asyncHandler(async (req, res) => {
+  const { name } = req.user;
+
+  res.json({ name });
+})

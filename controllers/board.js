@@ -90,3 +90,39 @@ exports.deleteTasks = asyncHandler(async (req, res) => {
 
   res.json({ board });
 });
+
+// @desc      Move a column
+// @route     PUT /api/board/column
+// @access    Private
+exports.moveColumn = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { fromColumnIndex, toColumnIndex } = req.body;
+
+  let board = await Board.findOne({ user: user._id });
+
+  const columns = board.columns;
+  const cloumnToMove = columns.splice(fromColumnIndex, 1)[0];
+  columns.splice(toColumnIndex, 0, cloumnToMove);
+
+  board = await board.save();
+
+  res.json({ board });
+});
+
+// @desc      Move a task
+// @route     PUT /api/board/column/task
+// @access    Private
+exports.moveTask = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { fromColumnIndex, toColumnId, fromTaskIndex, toTaskIndex } = req.body;
+
+  let board = await Board.findOne({ user: user._id });
+
+  const fromTasks = board.columns[fromColumnIndex].tasks;
+  const task = fromTasks.splice(fromTaskIndex, 1)[0];
+  board.columns.id(toColumnId).tasks.splice(toTaskIndex, 0, task);
+
+  board = await board.save();
+
+  res.json({ board });
+});
